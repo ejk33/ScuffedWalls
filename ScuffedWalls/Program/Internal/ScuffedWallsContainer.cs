@@ -287,6 +287,7 @@ Workspace
                 j++;
             }
 
+            // Preselect, unattended mode
             if (preselectedDifficultyFile != null)
             {
                 config.IsAutoImportEnabled = true;
@@ -296,8 +297,10 @@ Workspace
                 config.OldMapPath = Path.Combine(mapFolder.FullName, preselectedDifficultyFile.Split('.')[0] + "_Old.dat");
                 config.BackupPaths.BackupFolderPath = Path.Combine(mapFolder.FullName, preselectedDifficultyFile.Split('.')[0] + "Backup");
                 config.MapFilePath = Path.Combine(mapFolder.FullName, preselectedDifficultyFile);
+                config.Unattended = true;
             }
 
+            // Interactive mode
             if (preselectedDifficultyFile == null)
             {
 

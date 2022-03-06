@@ -30,6 +30,11 @@
                 ScuffedWallsContainer.InvokeOnProgramComplete();
                 printStats();
                 Print($"Completed in {(DateTime.Now - StartTime).TotalSeconds} Seconds");
+                if (ScuffedWallsContainer.ScuffedConfig.Unattended)
+                {
+                    Print("Unattended mode. Exiting...");
+                    Environment.Exit(0);
+                }
                 Print($"Waiting for changes to {string.Join(", ", ScuffedWallsContainer.FilesToChange.Select(file => file.File.Name))}");
                 FileChangeDetector.WaitForChange(ScuffedWallsContainer.FilesToChange);
                 ScuffedWallsContainer.ResetAwaitingFiles();

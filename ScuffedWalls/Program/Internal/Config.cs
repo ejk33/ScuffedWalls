@@ -15,6 +15,7 @@
         public bool IsAutoSimplifyPointDefinitionsEnabled { get; set; }
         public bool PrettyPrintJson { get; set; }
         public Backup BackupPaths { get; set; }
+        public bool Unattended { get; set; } = false;
         public class Backup
         {
             public string BackupFolderPath { get; set; }
