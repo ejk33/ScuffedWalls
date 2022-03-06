@@ -254,14 +254,12 @@ Workspace
             }
         }
 
-
-
-
         public static Config ConfigureSW()
         {
             Config config = new Config() { IsBackupEnabled = true, IsAutoImportEnabled = false };
 
             string mapfolderpath = args != null && args.Any() ? args[0] : new FileInfo(Process.GetCurrentProcess().MainModule.FileName).DirectoryName;
+            string preselectedDifficultyFile = args != null && args.Count() > 1 ? args[1] : null;
             // get beatmap option
             DirectoryInfo mapFolder = new DirectoryInfo(mapfolderpath);
             FileInfo[] mapDataFiles = mapFolder.GetFiles("*.dat");
@@ -289,39 +287,53 @@ Workspace
                 j++;
             }
 
-            Console.Write($"Difficulty To Work On (overwrites everything in this difficulty) ({string.Join(",", indexoption)}):");
-            int option = Convert.ToInt32(Console.ReadLine());
-
-            Console.Write("AutoImport Map? (writes an import statement for created backup file) (y/n):");
+            if (preselectedDifficultyFile != null)
             {
-                char answer = Convert.ToChar(Console.ReadLine().ToLower());
-                if (answer == 'y') config.IsAutoImportEnabled = true;
+                config.IsAutoImportEnabled = true;
+                config.IsBackupEnabled = false;
+                config.ClearConsoleOnRefresh = true;
+                config.SWFilePath = Path.Combine(mapFolder.FullName, preselectedDifficultyFile.Split('.')[0] + "_ScuffedWalls.sw");
+                config.OldMapPath = Path.Combine(mapFolder.FullName, preselectedDifficultyFile.Split('.')[0] + "_Old.dat");
+                config.BackupPaths.BackupFolderPath = Path.Combine(mapFolder.FullName, preselectedDifficultyFile.Split('.')[0] + "Backup");
+                config.MapFilePath = Path.Combine(mapFolder.FullName, preselectedDifficultyFile);
             }
 
-            Console.Write("Create a Backup of SW History? (backs up .SW file on each save) (y/n):");
+            if (preselectedDifficultyFile == null)
             {
-                char answer = Convert.ToChar(Console.ReadLine().ToLower());
-                if (answer == 'n') config.IsBackupEnabled = false;
+
+                Console.Write($"Difficulty To Work On (overwrites everything in this difficulty) ({string.Join(",", indexoption)}):");
+                int option = Convert.ToInt32(Console.ReadLine());
+
+                Console.Write("AutoImport Map? (writes an import statement for created backup file) (y/n):");
+                {
+                    char answer = Convert.ToChar(Console.ReadLine().ToLower());
+                    if (answer == 'y') config.IsAutoImportEnabled = true;
+                }
+
+                Console.Write("Create a Backup of SW History? (backs up .SW file on each save) (y/n):");
+                {
+                    char answer = Convert.ToChar(Console.ReadLine().ToLower());
+                    if (answer == 'n') config.IsBackupEnabled = false;
+                }
+                Console.Write("Clear Console on Refresh? (y/n):");
+                {
+                    char answer = Convert.ToChar(Console.ReadLine().ToLower());
+                    if (answer == 'y') config.ClearConsoleOnRefresh = true;
+                }
+
+                //path of the sw file by difficulty name
+                config.SWFilePath = Path.Combine(mapFolder.FullName, mapDataFiles[option].Name.Split('.')[0] + "_ScuffedWalls.sw");
+
+                config.OldMapPath = Path.Combine(mapFolder.FullName, mapDataFiles[option].Name.Split('.')[0] + "_Old.dat");
+
+                config.BackupPaths.BackupFolderPath = Path.Combine(mapFolder.FullName, mapDataFiles[option].Name.Split('.')[0] + "Backup");
+
+                config.MapFilePath = mapDataFiles[option].FullName;
             }
-            Console.Write("Clear Console on Refresh? (y/n):");
-            {
-                char answer = Convert.ToChar(Console.ReadLine().ToLower());
-                if (answer == 'y') config.ClearConsoleOnRefresh = true;
-            }
-
-
-            //path of the sw file by difficulty name
-            config.SWFilePath = Path.Combine(mapFolder.FullName, mapDataFiles[option].Name.Split('.')[0] + "_ScuffedWalls.sw");
-
-            config.OldMapPath = Path.Combine(mapFolder.FullName, mapDataFiles[option].Name.Split('.')[0] + "_Old.dat");
 
             config.BackupPaths = new Config.Backup();
 
-            config.MapFilePath = mapDataFiles[option].FullName;
-
             config.MapFolderPath = mapfolderpath;
-
-            config.BackupPaths.BackupFolderPath = Path.Combine(mapFolder.FullName, mapDataFiles[option].Name.Split('.')[0] + "Backup");
 
             config.BackupPaths.BackupSWFolderPath = Path.Combine(config.BackupPaths.BackupFolderPath, "SW_History");
 
