@@ -254,7 +254,10 @@ Workspace
             {
                 if (filename.Name != "info.dat" && filename.Name != "Info.dat")
                 {
-                    Console.WriteLine(j + ": " + filename.Name.Split('.')[0]);
+                    if (preselectedDifficultyFile == null)
+                    {
+                        Console.WriteLine(j + ": " + filename.Name.Split('.')[0]);
+                    }
                     indexoption.Add(j);
                 }
                 else
@@ -269,7 +272,7 @@ Workspace
             {
                 config.IsAutoImportEnabled = true;
                 config.IsBackupEnabled = false;
-                config.ClearConsoleOnRefresh = true;
+                config.ClearConsoleOnRefresh = false;
                 config.SWFilePath = Path.Combine(mapFolder.FullName, preselectedDifficultyFile.Split('.')[0] + "_ScuffedWalls.sw");
                 config.OldMapPath = Path.Combine(mapFolder.FullName, preselectedDifficultyFile.Split('.')[0] + "_Old.dat");
                 config.BackupPaths.BackupFolderPath = Path.Combine(mapFolder.FullName, preselectedDifficultyFile.Split('.')[0] + "Backup");
@@ -310,8 +313,6 @@ Workspace
                 }
 
                 //path of the sw file by difficulty name
-                Console.WriteLine("fullName " + mapFolder.FullName);
-                Console.WriteLine("rest " + mapDataFiles[option].Name.Split('.')[0] + "_ScuffedWalls.sw");
                 config.SWFilePath = Path.Combine(mapFolder.FullName, mapDataFiles[option].Name.Split('.')[0] + "_ScuffedWalls.sw");
 
                 config.OldMapPath = Path.Combine(mapFolder.FullName, mapDataFiles[option].Name.Split('.')[0] + "_Old.dat");
@@ -321,7 +322,7 @@ Workspace
                 config.MapFilePath = mapDataFiles[option].FullName;
             }
 
-            Console.WriteLine("Swfile path " + config.SWFilePath);
+            Console.WriteLine(config.SWFilePath);
 
             config.MapFolderPath = mapfolderpath;
 
