@@ -64,7 +64,7 @@ Workspace
             args = argss;
             ConfigFileName = $"{AppDomain.CurrentDomain.BaseDirectory}ScuffedWalls.json";
             Console.WriteLine(ConfigFileName);
-            ScuffedConfig = GetConfig();
+            ScuffedConfig = ConfigureSW();
 
             VerifyOld();
             VerifySW();
@@ -169,11 +169,6 @@ Workspace
             BackupMap();
         }
 
-        public static Config GetConfig()
-        {
-            VerifyConfig();
-            return JsonSerializer.Deserialize<Config>(File.ReadAllText(ConfigFileName), DefaultJsonConverterSettings);
-        }
         public static void VerifySW()
         {
             if (!File.Exists(ScuffedConfig.SWFilePath))
@@ -235,30 +230,12 @@ Workspace
                 ScuffedWalls.Print("Created New Old Map File");
             }
         }
-        public static void VerifyConfig()
-        {
-            if (args.Any() || !File.Exists(ConfigFileName))
-            {
-                Config reConfig = ConfigureSW();
-
-
-                if (File.Exists(ConfigFileName)) File.Delete(ConfigFileName);
-
-
-                using (StreamWriter file = new StreamWriter(ConfigFileName))
-                {
-                    file.Write(JsonSerializer.Serialize(reConfig, new JsonSerializerOptions() { WriteIndented = true }));
-                    file.Close();
-                }
-                File.SetAttributes(ConfigFileName, FileAttributes.Normal);
-            }
-        }
 
         public static Config ConfigureSW()
         {
             Config config = new Config() { IsBackupEnabled = true, IsAutoImportEnabled = false };
 
-            string mapfolderpath = args != null && args.Any() ? args[0] : new FileInfo(Process.GetCurrentProcess().MainModule.FileName).DirectoryName;
+            string mapfolderpath = args[0];
             string preselectedDifficultyFile = args != null && args.Count() > 1 ? args[1] : null;
             // get beatmap option
             DirectoryInfo mapFolder = new DirectoryInfo(mapfolderpath);
@@ -310,21 +287,31 @@ Workspace
                 Console.Write("AutoImport Map? (writes an import statement for created backup file) (y/n):");
                 {
                     char answer = Convert.ToChar(Console.ReadLine().ToLower());
-                    if (answer == 'y') config.IsAutoImportEnabled = true;
+                    if (answer == 'y')
+                    {
+                        config.IsAutoImportEnabled = true;
+                    }
                 }
 
                 Console.Write("Create a Backup of SW History? (backs up .SW file on each save) (y/n):");
                 {
                     char answer = Convert.ToChar(Console.ReadLine().ToLower());
-                    if (answer == 'n') config.IsBackupEnabled = false;
+                    if (answer == 'n') { 
+                        config.IsBackupEnabled = false; 
+                    }
                 }
                 Console.Write("Clear Console on Refresh? (y/n):");
                 {
                     char answer = Convert.ToChar(Console.ReadLine().ToLower());
-                    if (answer == 'y') config.ClearConsoleOnRefresh = true;
+                    if (answer == 'y')
+                    {
+                        config.ClearConsoleOnRefresh = true;
+                    }
                 }
 
                 //path of the sw file by difficulty name
+                Console.WriteLine("fullName " + mapFolder.FullName);
+                Console.WriteLine("rest " + mapDataFiles[option].Name.Split('.')[0] + "_ScuffedWalls.sw");
                 config.SWFilePath = Path.Combine(mapFolder.FullName, mapDataFiles[option].Name.Split('.')[0] + "_ScuffedWalls.sw");
 
                 config.OldMapPath = Path.Combine(mapFolder.FullName, mapDataFiles[option].Name.Split('.')[0] + "_Old.dat");
@@ -334,7 +321,7 @@ Workspace
                 config.MapFilePath = mapDataFiles[option].FullName;
             }
 
-            config.BackupPaths = new Config.Backup();
+            Console.WriteLine("Swfile path " + config.SWFilePath);
 
             config.MapFolderPath = mapfolderpath;
 
