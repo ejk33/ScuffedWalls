@@ -91,7 +91,7 @@ namespace ScuffedWalls.Functions
             Stats.AddStats(containResult.BeatMap.Stats);
             InstanceWorkspace.Add(containResult);
 
-            ScuffedWalls.Print($"Modified {index} {AppendObjectType.ToString().MakePlural(FilteredObjects.Count())} from beats {starttime} to {endtime}");
+            // ScuffedWalls.Print($"Modified {index} {AppendObjectType.ToString().MakePlural(FilteredObjects.Count())} from beats {starttime} to {endtime}");
         }
 
     }

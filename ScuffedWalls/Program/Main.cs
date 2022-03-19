@@ -59,6 +59,7 @@
             },e => 
             {
                 Print($"Error executing ScuffedRequest ERROR: {(e.InnerException ?? e).Message}", LogSeverity.Critical);
+                Console.WriteLine(e);
             });
             Debug.TryAction(() =>
             {

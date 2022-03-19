@@ -86,7 +86,7 @@ namespace ScuffedWalls
                 if (!HideLogs)
                 {
                     string stats = string.Join(", ", funcInstance.Stats.Select(st => $"{st.Value} {st.Key.MakePlural(st.Value)}"));
-                    ScuffedWalls.Print($"Added \"{_request.Name}\" at beat {initialTime} {(string.IsNullOrEmpty(stats) ? "" : $"({stats})")}", Color: ConsoleColor.White, OverrideStackFrame: func.Name);
+                    // ScuffedWalls.Print($"Added \"{_request.Name}\" at beat {initialTime} {(string.IsNullOrEmpty(stats) ? "" : $"({stats})")}", Color: ConsoleColor.White, OverrideStackFrame: func.Name);
                 }
 
             }, e =>
