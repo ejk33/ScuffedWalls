@@ -273,9 +273,20 @@ namespace ModChart.Wall
         {
             object obj = null;
             XmlSerializer serializer = new XmlSerializer(typeof(t));
-            using (Stream reader = new FileStream(path, FileMode.Open))
+            for (int i = 0; i < 100; i++)
             {
-                obj = serializer.Deserialize(reader);
+                try
+                {
+                    using (Stream reader = new FileStream(path, FileMode.Open))
+                    {
+                        obj = serializer.Deserialize(reader);
+                        break;
+                    }
+                } catch (Exception)
+                {
+                    Console.WriteLine("Could not open " + path + ", retry " + i);
+                    System.Threading.Thread.Sleep(125);
+                }
             }
             return obj;
         }
